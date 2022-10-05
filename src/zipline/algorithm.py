@@ -625,8 +625,9 @@ class TradingAlgorithm(object):
 
             # convert perf dict to pandas dataframe
             daily_stats = self._create_daily_stats(perfs)
+            minute_stats = self._create_minute_stats(perfs)
 
-            self.analyze(daily_stats)
+            self.analyze(minute_stats if self.sim_params.emission_rate == "minute" else daily_stats)
         finally:
             self.data_portal = None
             self.metrics_tracker = None
@@ -652,6 +653,26 @@ class TradingAlgorithm(object):
         daily_dts = make_utc_aware(daily_dts)
         daily_stats = pd.DataFrame(daily_perfs, index=daily_dts)
         return daily_stats
+
+    def _create_minute_stats(self, perfs):
+        # create minute and cumulative stats dataframe
+        minute_perfs = []
+        # TODO: the loop here could overwrite expected properties
+        # of minute_perf. Could potentially raise or log a
+        # warning.
+        for perf in perfs:
+            if 'minute_perf' in perf:
+
+                perf['minute_perf'].update(perf['minute_perf'].pop('recorded_vars'))
+                perf['minute_perf'].update(perf['cumulative_risk_metrics'])
+                minute_perfs.append(perf['minute_perf'])
+            else:
+                self.risk_report = perf
+
+        minute_dts = pd.DatetimeIndex([p['period_close'] for p in minute_perfs])
+        minute_dts = make_utc_aware(minute_dts)
+        minute_stats = pd.DataFrame(minute_perfs, index=minute_dts)
+        return minute_stats
 
     def calculate_capital_changes(
         self, dt, emission_rate, is_interday, portfolio_value_adjustment=0.0
