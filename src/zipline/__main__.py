@@ -143,6 +143,13 @@ DEFAULT_BUNDLE = "quandl"
     help="The data frequency of the simulation.",
 )
 @click.option(
+    "--emission-rate",
+    type=click.Choice({"daily", "minute"}),
+    default="daily",
+    show_default=True,
+    help="The emission rate of the simulation.",
+)
+@click.option(
     "--capital-base",
     type=float,
     default=10e6,
@@ -251,6 +258,7 @@ def run(
     algotext,
     define,
     data_frequency,
+    emission_rate,
     capital_base,
     bundle,
     bundle_timestamp,
@@ -306,6 +314,7 @@ def run(
         algotext=algotext,
         defines=define,
         data_frequency=data_frequency,
+        emission_rate=emission_rate,
         capital_base=capital_base,
         bundle=bundle,
         bundle_timestamp=bundle_timestamp,

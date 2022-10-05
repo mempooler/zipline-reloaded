@@ -70,6 +70,7 @@ def _run(
     algotext,
     defines,
     data_frequency,
+    emission_rate,
     capital_base,
     bundle,
     bundle_timestamp,
@@ -207,6 +208,7 @@ def _run(
                 end_session=end,
                 trading_calendar=trading_calendar,
                 capital_base=capital_base,
+                emission_rate=emission_rate,
                 data_frequency=data_frequency,
             ),
             metrics_set=metrics_set,
@@ -308,6 +310,7 @@ def run_algorithm(
     before_trading_start=None,
     analyze=None,
     data_frequency="daily",
+    emission_rate="daily",
     bundle="quantopian-quandl",
     bundle_timestamp=None,
     trading_calendar=None,
@@ -348,6 +351,8 @@ def run_algorithm(
         performance data.
     data_frequency : {'daily', 'minute'}, optional
         The data frequency to run the algorithm at.
+    emission_rate : {'daily', 'minute'}, optional
+        The emission rate to run the algorithm at.
     bundle : str, optional
         The name of the data bundle to use to load the data to run the backtest
         with. This defaults to 'quantopian-quandl'.
@@ -403,6 +408,7 @@ def run_algorithm(
         algotext=None,
         defines=(),
         data_frequency=data_frequency,
+        emission_rate=emission_rate,
         capital_base=capital_base,
         bundle=bundle,
         bundle_timestamp=bundle_timestamp,
